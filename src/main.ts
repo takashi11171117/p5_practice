@@ -7,11 +7,25 @@ type MoverType = {
 }
 
 let Mover = (p: p5) => {
-    let location = p.createVector(p.random(p.width), p.random(p.height))
-    let velocity = p.createVector(p.random(-2, 2), p.random(-2, 2))
+    let location = p.createVector(p.width/2, p.height/2)
+    let velocity = p.createVector(0, 0)
+    let acceleration = p.createVector(-0.001, 0.01)
+    let topspeed = 10
 
     return {
-        update: () => location.add(velocity),
+        update: () => {
+            let mouse = p.createVector(p.mouseX, p.mouseY)
+            let dir = p5.Vector.sub(mouse, location)
+
+            dir.normalize()
+            dir.mult(0.5)
+
+            acceleration = dir
+
+            velocity.add(acceleration)
+            velocity.limit(topspeed)
+            location.add(velocity)
+        },
         display: () => {
             p.stroke(0)
             p.fill(175)
