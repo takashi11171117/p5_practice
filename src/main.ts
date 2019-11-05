@@ -7,10 +7,10 @@ type MoverType = {
 }
 
 let Mover = (p: p5) => {
-    let location = p.createVector(p.width/2, p.height/2)
+    let location = p.createVector(p.random(p.width), p.random(p.height))
     let velocity = p.createVector(0, 0)
     let acceleration = p.createVector(-0.001, 0.01)
-    let topspeed = 10
+    let topspeed = 4
 
     return {
         update: () => {
@@ -19,7 +19,6 @@ let Mover = (p: p5) => {
 
             dir.normalize()
             dir.mult(0.5)
-
             acceleration = dir
 
             velocity.add(acceleration)
@@ -48,15 +47,14 @@ let Mover = (p: p5) => {
 }
 
 const sketch = (p: p5) => {
-    let mover: MoverType;
+    let movers: MoverType[] = [];
 
     p.preload = () => {
     };
 
     p.setup = () => {
-        p.resizeCanvas(p.windowWidth, p.windowHeight)
-        mover = Mover(p)
-        console.log(mover)
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+        [...Array(20)].map(() => movers.push(Mover(p)))
     };
 
     p.windowResized = () => {
@@ -64,10 +62,12 @@ const sketch = (p: p5) => {
     };
 
     p.draw = () => {
-        p.background(0)
-        mover.update()
-        mover.checkEdges()
-        mover.display()
+        p.background(0);
+        [...Array(20)].map((_, i) => {
+            movers[i].update()
+            movers[i].checkEdges()
+            movers[i].display()
+        })
     }
 };
 
