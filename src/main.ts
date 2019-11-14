@@ -5,6 +5,7 @@ type MoverType = {
     update: Function
     display: Function
     checkEdges: Function
+    getMass: Function
 }
 
 let Mover = (p: p5, m: number, x: number, y: number) => {
@@ -14,6 +15,9 @@ let Mover = (p: p5, m: number, x: number, y: number) => {
     let mass = m
 
     return {
+        getMass: () => {
+            return mass;
+        },
         applyForce: (force: p5.Vector) => {
             let f = p5.Vector.div(force, mass)
             acceleration.add(f)
@@ -63,10 +67,11 @@ const sketch = (p: p5) => {
     p.draw = () => {
         p.background(255);
 
-        let wind = p.createVector(0.01, 0)
-        let gravity = p.createVector(0, 0.1);
-
         [...Array(100)].map((_, i) => {
+            let wind = p.createVector(0.001, 0)
+            let m = movers[i].getMass();
+            let gravity = p.createVector(0, 0.1 * m);
+
             movers[i].applyForce(wind)
             movers[i].applyForce(gravity)
             movers[i].update()
